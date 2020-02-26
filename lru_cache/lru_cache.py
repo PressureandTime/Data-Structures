@@ -1,4 +1,6 @@
-from  doubly_linked_list import DoublyLinkedList
+from doubly_linked_list import DoublyLinkedList
+
+
 class LRUCache:
     """
     Our LRUCache class keeps track of the max number of nodes it
@@ -20,6 +22,7 @@ class LRUCache:
     Returns the value associated with the key or None if the
     key-value pair doesn't exist in the cache.
     """
+
     def get(self, key):
         if key in self.storage:
             node = self.storage[key]
@@ -38,5 +41,19 @@ class LRUCache:
     want to overwrite the old value associated with the key with
     the newly-specified value.
     """
+
     def set(self, key, value):
-        pass
+        if key in self.storage:
+            node = self.storage[key]
+            node.value = (key, value)
+            self.order.move_to_end(node)
+            return
+
+        if self.size == self.limit:
+            del self.storage[self.order.head.value[0]]
+            self.order.remove_from_head()
+            self.size -= 1
+
+        self.order.add_to_tail((key, value))
+        self.storage[key] = self.order.tail
+        self.size += 1
